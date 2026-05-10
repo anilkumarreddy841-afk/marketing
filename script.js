@@ -1,18 +1,23 @@
-function getPrice() {
+async function getPrice() {
     let fruit = document.getElementById("fruit").value;
-    let price = 0;
 
-    if (fruit === "apple") {
-        price = 100;
-    } else if (fruit === "banana") {
-        price = 50;
-    } else if (fruit === "mango") {
-        price = 80;
+    try {
+        const response = await fetch("http://localhost:3000/price/" + fruit);
+
+        if (!response.ok) {
+            throw new Error("Server error");
+        }
+
+        const data = await response.json();
+
+        document.getElementById("price").innerText =
+            "Price: ₹" + data.currentPrice;
+
+        document.getElementById("future").innerText =
+            "Future Price: ₹" + data.futurePrice;
+
+    } catch (error) {
+        console.error(error);
+        alert("Failed to fetch data. Check backend server.");
     }
-
-    document.getElementById("price").innerText = "Price: ₹" + price;
-
-    // Future prediction (simple logic)
-    let futurePrice = price + Math.floor(Math.random() * 20);
-    document.getElementById("future").innerText = "Future Price: ₹" + futurePrice;
 }
